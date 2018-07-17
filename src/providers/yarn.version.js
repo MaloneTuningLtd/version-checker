@@ -1,20 +1,15 @@
 const { fetch } = require('../common/request');
+const { semverCompare } = require('../comparison');
 
 const githubApi = 'https://api.github.com';
-const gradleRepo = 'gradle/gradle';
+const gradleRepo = 'yarnpkg/yarn';
 
 const url = `${githubApi}/repos/${gradleRepo}/tags`;
 
 const get = async () => {
   let tags = await fetch(url);
 
-  const cmpTags = ({ name: nameA }, { name: nameB }) => {
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-    return 0;
-  }
-
-  tags = tags.sort(cmpTags);
+  tags = tags.sort(semverCompare('name'));
 
   return tags;
 };
