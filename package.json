@@ -1,0 +1,9 @@
+{
+  "name": "version-checker",
+  "version": "0.0.1",
+  "description": "checks for new versions of exciting software",
+  "main": "index.js",
+  "author": "Khoa Nguyen <khoa.tan.nguyen.96@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
