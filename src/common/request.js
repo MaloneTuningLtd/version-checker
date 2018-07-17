@@ -117,8 +117,8 @@ const post = exports.post = (url, data) => {
     // TODO: not so sure about this.
     const postData = JSON.stringify(data);
 
-    req.write(postData);
-    req.end();
+    request.write(postData);
+    request.end();
   });
 };
 
