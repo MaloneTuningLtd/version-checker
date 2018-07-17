@@ -1,82 +1,35 @@
-const fs = require('fs');
-const path = require('path');
+const schedule = require('node-schedule');
 
-const versionsFromFile = require('./versions.json');
+const { normalizeVersion, compareVersions, readFromVersionFile, writeToVersionFile } = require('./src/versions');
 const { versionEvent } = require('./src/events/bootstrap');
 
 const providers = [
   {
     name: 'gradle',
     property: 'name',
-    provider: require('./src/providers/gradleVersions'),
+    provider: require('./src/providers/gradle.version'),
+  },
+  {
+    name: 'composer',
+    property: 'name',
+    provider: require('./src/providers/composer.version'),
+  },
+  {
+    name: 'phpunit',
+    property: 'name',
+    provider: require('./src/providers/phpunit.version'),
+  },
+  {
+    name: 'npm',
+    property: 'name',
+    provider: require('./src/providers/npm.version'),
+  },
+  {
+    name: 'yarn',
+    property: 'name',
+    provider: require('./src/providers/yarn.version'),
   },
 ];
-
-const readFromVersionFile = () => {
-  const versions = {};
-
-  if (versionsFromFile !== undefined && versionsFromFile.length) {
-    versionsFromFile.forEach((thing) => {
-      if (thing !== undefined &&
-        thing.name !== undefined &&
-        thing.version !== undefined) {
-          versions[thing.name] = thing.version;
-        }
-    });
-  }
-
-  return versions;
-};
-
-const writeToVersionFile = (versions) => {
-  try {
-    const jsonFilePath = path.resolve(__dirname, 'versions.json');
-    const jsonifiedVersions = JSON.stringify(versions);
-
-    return new Promise((resolve, reject) => {
-      console.log('Writing \'versions.json\'');
-      fs.writeFile(jsonFilePath, jsonifiedVersions, 'utf-8', (err => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve();
-      }));
-    });
-
-  } catch (e) {
-    return false;
-  }
-};
-
-const compareVersions = (cached, recent) => {
-    const hasBeenUpdated = recent.filter((rec) => {
-      const { name, version } = rec;
-      const old = cached[name];
-
-      // check if it's the same
-      // if not it's been updated ;)
-      if (old !== undefined) {
-        return version !== old;
-      }
-
-      // doesn't exist, it's been updated ;)
-      return true;
-    });
-
-    // TODO: debug only
-    hasBeenUpdated.forEach(({ name, version }) => {
-      const oldVersion = cached[name];
-
-      if (oldVersion !== undefined && oldVersion !== null) {
-        console.log(`${name} has been recently updated to ${version} from ${oldVersion}`);
-      } else {
-        console.log(`${name} has been recently updated to ${version}`)
-      }
-    });
-
-    return hasBeenUpdated;
-};
 
 const emitRecentVersions = (recent) => {
   if (!recent && !recent.length) {
@@ -92,7 +45,7 @@ const processProviders = () => {
   const cachedVersions = readFromVersionFile();
   
   const processing = Promise.all(providers.map(p => p.provider().then(latest => {
-    const version = latest[p.property];
+    const version = normalizeVersion(latest[p.property]);
 
     return (version !== undefined && version !== null)
       ? { name: p.name, version }
@@ -117,4 +70,12 @@ const processProviders = () => {
   return Promise.all(postprocessing);
 };
 
-processProviders();
+// MAIN PROCESS
+// Schedule at 4pm :')
+console.log('Version Checker: runs every day at 10:00');
+schedule.scheduleJob('* 10 * * * *', () => {
+  processProviders();
+});
+
+// DEBUG
+// processProviders();
