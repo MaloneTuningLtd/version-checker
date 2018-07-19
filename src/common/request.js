@@ -35,7 +35,7 @@ const fetch = exports.fetch = (url) => {
       const contentType = response.headers['content-type'];
 
       if (statusCode !== 200 && statusCode !== 201) {
-        const err = new Error('Request Failed.\n' + `Status Code: ${statusCode}`)
+        const err = new Error('Request Failed.\n' + `Status Code: ${statusCode}\n` + `Path: ${options.path}`)
 
         if (err) {
           // consume response data to free up memory
