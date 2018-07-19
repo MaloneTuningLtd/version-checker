@@ -10,35 +10,25 @@ const normalizeVersion = v => {
 };
 
 const compareVersions = (cached, recent) => {
-  const hasBeenUpdated = recent.filter((rec) => {
-    const { name, version } = rec;
-    
-    const cachedVersion = normalizeVersion(cached[name]);
-    const recentVersion = normalizeVersion(version);
+  const againstCacheRecent = (versionslist, item) => {
+    const { name, version } = item;
 
-    // check if it's the same
-    // if not it's been updated ;)
-    if (cachedVersion !== undefined) {
-      return recentVersion !== cachedVersion;
+    const c = normalizeVersion(cached[name]);
+    const r = normalizeVersion(version);
+
+    // check if it's greater
+    // if it is, it's been updated ;)
+    if (c === undefined || r !== c) {
+      versionslist.push({
+        ...item,
+        oldVersion: c,
+      })
     }
 
-    // doesn't exist, it's been updated ;)
-    return true;
-  });
+    return versionslist;
+  };
 
-  // TODO: debug only
-  // hasBeenUpdated.forEach(({ name, version }) => {
-  //   const oldVersion = normalizeVersion(cached[name]);
-  //   const newVersion = normalizeVersion(version);
-
-  //   if (oldVersion !== undefined && oldVersion !== null) {
-  //     console.log(`${name} has been recently updated to ${newVersion} from ${oldVersion}`);
-  //   } else {
-  //     console.log(`${name} has been recently updated to ${newVersion}`)
-  //   }
-  // });
-
-  return hasBeenUpdated;
+  return recent.reduce(againstCacheRecent, []);
 };
 
 const readFromVersionFile = () => {

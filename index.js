@@ -9,8 +9,8 @@ const emitRecentVersions = (recent) => {
     return;
   }
 
-  recent.forEach(({ name, version }) => {
-    versionEvent.emit('updated', name, version);
+  recent.forEach(({ name, version, oldVersion }) => {
+    versionEvent.emit('updated', name, version, oldVersion);
   });
 };
 
@@ -51,4 +51,5 @@ schedule.scheduleJob('* 10 * * * *', () => {
 });
 
 // DEBUG
+// Or well, at least run this once...
 processProviders();

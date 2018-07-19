@@ -2,11 +2,13 @@ const { post } = require('../../common/request');
 
 const SLACK_URL = 'https://hooks.slack.com/services/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';
 
-const formatSlackMessage = (name, version) => ({
+const formatSlackMessage = (name, version, oldVersion) => ({
     text: `${name} has been recently updated!`,
     attachments: [{
       title: name,
-      text: `Updated to ${version}`,
+      text: (oldVersion !== undefined)
+        ? `Updated to ${version} from ${oldVersion}`
+        : `Updated to ${version}`,
     }],
 });
 
