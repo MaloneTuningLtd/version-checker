@@ -1,35 +1,8 @@
 const schedule = require('node-schedule');
+const providers = require('./src/providers');
 
 const { normalizeVersion, compareVersions, readFromVersionFile, writeToVersionFile } = require('./src/versions');
 const { versionEvent } = require('./src/events/bootstrap');
-
-const providers = [
-  {
-    name: 'gradle',
-    property: 'name',
-    provider: require('./src/providers/gradle.version'),
-  },
-  {
-    name: 'composer',
-    property: 'name',
-    provider: require('./src/providers/composer.version'),
-  },
-  {
-    name: 'phpunit',
-    property: 'name',
-    provider: require('./src/providers/phpunit.version'),
-  },
-  {
-    name: 'npm',
-    property: 'name',
-    provider: require('./src/providers/npm.version'),
-  },
-  {
-    name: 'yarn',
-    property: 'name',
-    provider: require('./src/providers/yarn.version'),
-  },
-];
 
 const emitRecentVersions = (recent) => {
   if (!recent && !recent.length) {
@@ -78,4 +51,4 @@ schedule.scheduleJob('* 10 * * * *', () => {
 });
 
 // DEBUG
-// processProviders();
+processProviders();
