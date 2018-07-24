@@ -1,12 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
-const versionsFromFile = require('../../versions.json');
+const { versionsPath } = require('../../config');
 
 const normalizeVersion = v => {
   if (v === undefined) return undefined;
   if (v.charAt(0) === 'v') return v;
   return 'v' + v;
+};
+
+const versionsFromFile = () => {
+  try {
+    const file = fs.readFileSync(path.resolve(versionsPath), 'utf8');
+    const fileVersions = JSON.parse(file);
+
+    return fileVersions;
+  } catch (e) {
+    return {};
+  }
 };
 
 const compareVersions = (cached, recent) => {
@@ -33,9 +44,10 @@ const compareVersions = (cached, recent) => {
 
 const readFromVersionFile = () => {
   const versions = {};
+  const fileVersions = versionsFromFile();
 
-  if (versionsFromFile !== undefined && versionsFromFile.length) {
-    versionsFromFile.forEach((thing) => {
+  if (fileVersions !== undefined && fileVersions.length) {
+    fileVersions.forEach((thing) => {
       if (thing !== undefined &&
         thing.name !== undefined &&
         thing.version !== undefined) {
@@ -49,7 +61,7 @@ const readFromVersionFile = () => {
 
 const writeToVersionFile = (versions) => {
   try {
-    const jsonFilePath = path.resolve(__dirname, '../../versions.json');
+    const jsonFilePath = path.resolve(versionsPath);
     const jsonifiedVersions = JSON.stringify(versions, null, '  ');
 
     return new Promise((resolve, reject) => {
