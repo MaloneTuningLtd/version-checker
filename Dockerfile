@@ -12,3 +12,5 @@ WORKDIR /app
 COPY --from=0 /app .
 COPY . .
 CMD ["node", "index.js"]
+
+VOLUME [ "/app/data" ]
