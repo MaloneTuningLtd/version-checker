@@ -1,6 +1,5 @@
 const { post } = require('../../common/request');
-
-const SLACK_URL = 'https://hooks.slack.com/services/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';
+const { slackHook } = require('../../../config');
 
 const formatSlackMessage = (name, version, oldVersion) => ({
     text: `${name} has been recently updated!`,
@@ -12,11 +11,12 @@ const formatSlackMessage = (name, version, oldVersion) => ({
     }],
 });
 
-const sendSlackMessage = (url, message) => post(url, message);
-
 const updated = (name, version) => {
   console.log('EVENT (update): ', name, version);
-  return sendSlackMessage(SLACK_URL, formatSlackMessage(name, version));
+  
+  if (slackHook && slackHook !== undefined) {
+    post(slackHook, formatSlackMessage(name, version));
+  }
 };
 
 module.exports = {
