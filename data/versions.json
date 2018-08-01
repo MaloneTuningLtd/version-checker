@@ -13,10 +13,10 @@
   },
   {
     "name": "npm",
-    "version": "v6.2.0"
+    "version": "v6.3.0-next.0"
   },
   {
     "name": "yarn",
-    "version": "v1.9.1"
+    "version": "v1.9.2"
   }
 ]
