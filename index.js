@@ -1,4 +1,4 @@
-require('./rancherSecretsBootstrap');
+require('./rancherSecretsBootstrap')();
 
 const co = require('co');
 const schedule = require('node-schedule');
