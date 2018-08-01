@@ -20,7 +20,7 @@ const getCommonHeaders = () => {
   };
 };
 
-const fetch = exports.fetch = (url) => {
+const fetch = exports.fetch = (url, opts = {}) => {
   return new Promise((resolve, reject) => {
     const { hostname, path } = parseUrl(url);
 
@@ -28,6 +28,14 @@ const fetch = exports.fetch = (url) => {
       hostname,
       path,
       headers: getCommonHeaders(),
+    }
+
+    // merge headers together
+    if (opts.headers !== undefined) {
+      options.headers = {
+        ...options.headers,
+        ...opts.headers,
+      }
     }
 
     https.get(options, (response) => {
@@ -114,7 +122,6 @@ const post = exports.post = (url, data) => {
       });
     });
 
-    // TODO: not so sure about this.
     const postData = JSON.stringify(data);
 
     request.write(postData);

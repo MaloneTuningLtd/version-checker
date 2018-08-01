@@ -1,8 +1,11 @@
+require('./rancherSecretsBootstrap');
 const schedule = require('node-schedule');
 const providers = require('./src/providers');
 
 const { normalizeVersion, compareVersions, readFromVersionFile, writeToVersionFile } = require('./src/versions');
 const { versionEvent } = require('./src/events/bootstrap');
+
+const providers = require('./src/providers');
 
 const emitRecentVersions = (recent) => {
   if (!recent && !recent.length) {
