@@ -1,6 +1,7 @@
 require('./rancherSecretsBootstrap');
+
+const co = require('co');
 const schedule = require('node-schedule');
-const providers = require('./src/providers');
 
 const { normalizeVersion, compareVersions, readFromVersionFile, writeToVersionFile } = require('./src/versions');
 const { versionEvent } = require('./src/events/bootstrap');
@@ -17,42 +18,34 @@ const emitRecentVersions = (recent) => {
   });
 };
 
-const processProviders = () => {
-  const cachedVersions = readFromVersionFile();
+const parseVersions = function (source) {
+  const { name, property, provider } = source;
+  const version = provider().then(v => normalizeVersion(v[property]));
   
-  const processing = Promise.all(providers.map(p => p.provider().then(latest => {
-    const version = normalizeVersion(latest[p.property]);
+  return { name, version };
+}
 
-    return (version !== undefined && version !== null)
-      ? { name: p.name, version }
-      : undefined;
-  }))).then(rawProviders => rawProviders.filter(rp => rp !== undefined));
+const process = co.wrap(function *() {
+  const cached = readFromVersionFile();
+  const versions = yield providers.map(parseVersions);
 
-  const postprocessing = [];
+  const saved = writeToVersionFile(versions);
+  const updated = compareVersions(cached, versions);
 
-  processing.then(viableVersions => {
-    const saveVersionsCache = writeToVersionFile(viableVersions);
-    const recentlyUpdatedVersions = compareVersions(cachedVersions, viableVersions);
+  // emit events
+  emitRecentVersions(updated);
 
-    // emit events
-    emitRecentVersions(recentlyUpdatedVersions);
-
-    postprocessing.concat([
-      saveVersionsCache,
-      recentlyUpdatedVersions,
-    ]);
-  });
-
-  return Promise.all(postprocessing);
-};
+  // final result
+  yield [].concat([saved, updated]);
+});
 
 // MAIN PROCESS
 // Schedule at 4pm :')
 console.log('Version Checker: runs every day at 10:00');
 schedule.scheduleJob('* 10 * * * *', () => {
-  processProviders();
+  process();
 });
 
 // DEBUG
 // Or well, at least run this once...
-processProviders();
+process();
