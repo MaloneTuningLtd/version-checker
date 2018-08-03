@@ -6,10 +6,8 @@ const coerceIfInvalid = v => {
   }
 
   const coercedVersion = semver.coerce(v);
-    
-  return (semver.valid(coercedVersion))
-    ? coercedVersion
-    : null;
+
+  return semver.valid(coercedVersion) ? coercedVersion : null;
 };
 
 module.exports = (propertyName = '') => (a, b) => {

@@ -1,7 +1,7 @@
 const https = require('https');
 const { URL } = require('url');
 
-const parseUrl = (urlString) => {
+const parseUrl = urlString => {
   try {
     const url = new URL(urlString);
 
@@ -12,7 +12,7 @@ const parseUrl = (urlString) => {
   } catch (e) {
     return null;
   }
-}
+};
 
 const getCommonHeaders = () => {
   return {
@@ -20,7 +20,7 @@ const getCommonHeaders = () => {
   };
 };
 
-const fetch = exports.fetch = (url, opts = {}) => {
+const fetch = (exports.fetch = (url, opts = {}) => {
   return new Promise((resolve, reject) => {
     const { hostname, path } = parseUrl(url);
 
@@ -28,22 +28,26 @@ const fetch = exports.fetch = (url, opts = {}) => {
       hostname,
       path,
       headers: getCommonHeaders(),
-    }
+    };
 
     // merge headers together
     if (opts.headers !== undefined) {
       options.headers = {
         ...options.headers,
         ...opts.headers,
-      }
+      };
     }
 
-    https.get(options, (response) => {
+    https.get(options, response => {
       const { statusCode } = response;
       const contentType = response.headers['content-type'];
 
       if (statusCode !== 200 && statusCode !== 201) {
-        const err = new Error('Request Failed.\n' + `Status Code: ${statusCode}\n` + `Path: ${options.path}`)
+        const err = new Error(
+          'Request Failed.\n' +
+            `Status Code: ${statusCode}\n` +
+            `Path: ${options.path}`
+        );
 
         if (err) {
           // consume response data to free up memory
@@ -54,7 +58,7 @@ const fetch = exports.fetch = (url, opts = {}) => {
 
       let data = '';
 
-      response.on('data', (chunk) => {
+      response.on('data', chunk => {
         data += chunk;
       });
 
@@ -72,9 +76,9 @@ const fetch = exports.fetch = (url, opts = {}) => {
       });
     });
   });
-};
+});
 
-const post = exports.post = (url, data) => {
+const post = (exports.post = (url, data) => {
   return new Promise((resolve, reject) => {
     const { hostname, path } = parseUrl(url);
 
@@ -88,12 +92,14 @@ const post = exports.post = (url, data) => {
       method: 'POST',
     };
 
-    const request = https.request(options, (response) => {
+    const request = https.request(options, response => {
       const { statusCode } = response;
       const contentType = response.headers['content-type'];
 
       if (statusCode !== 200 && statusCode !== 201) {
-        const err = new Error('Request Failed.\n' + `Status Code: ${statusCode}`)
+        const err = new Error(
+          'Request Failed.\n' + `Status Code: ${statusCode}`
+        );
 
         if (err) {
           // consume response data to free up memory
@@ -104,7 +110,7 @@ const post = exports.post = (url, data) => {
 
       let data = '';
 
-      response.on('data', (chunk) => {
+      response.on('data', chunk => {
         data += chunk;
       });
 
@@ -127,7 +133,7 @@ const post = exports.post = (url, data) => {
     request.write(postData);
     request.end();
   });
-};
+});
 
 module.exports = {
   fetch,

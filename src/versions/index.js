@@ -33,7 +33,7 @@ const compareVersions = (cached, recent) => {
       versionslist.push({
         ...item,
         oldVersion: c,
-      })
+      });
     }
 
     return versionslist;
@@ -47,34 +47,35 @@ const readFromVersionFile = () => {
   const fileVersions = versionsFromFile();
 
   if (fileVersions !== undefined && fileVersions.length) {
-    fileVersions.forEach((thing) => {
-      if (thing !== undefined &&
+    fileVersions.forEach(thing => {
+      if (
+        thing !== undefined &&
         thing.name !== undefined &&
-        thing.version !== undefined) {
-          versions[thing.name] = thing.version;
-        }
+        thing.version !== undefined
+      ) {
+        versions[thing.name] = thing.version;
+      }
     });
   }
 
   return versions;
 };
 
-const writeToVersionFile = (versions) => {
+const writeToVersionFile = versions => {
   try {
     const jsonFilePath = path.resolve(versionsPath);
     const jsonifiedVersions = JSON.stringify(versions, null, '  ');
 
     return new Promise((resolve, reject) => {
-      console.log('Writing \'versions.json\'\n');
-      fs.writeFile(jsonFilePath, jsonifiedVersions, 'utf-8', (err => {
+      console.log("Writing 'versions.json'\n");
+      fs.writeFile(jsonFilePath, jsonifiedVersions, 'utf-8', err => {
         if (err) {
           return reject(err);
         }
 
         return resolve();
-      }));
+      });
     });
-
   } catch (e) {
     return false;
   }

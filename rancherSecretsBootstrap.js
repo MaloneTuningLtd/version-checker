@@ -13,7 +13,7 @@ module.exports = () => {
 
   const files = fs.readdirSync(SECRETS_PATH);
 
-  files.forEach((file) => {
+  files.forEach(file => {
     console.log('Bootstrapped secret', file);
     const content = fs.readFileSync(path.resolve(SECRETS_PATH, file));
     process.env[file] = content;
