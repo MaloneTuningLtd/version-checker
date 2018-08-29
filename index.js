@@ -45,11 +45,13 @@ const process = co.wrap(function*() {
 });
 
 // MAIN PROCESS
-// Schedule at 10am :')
-console.log('Version Checker: runs every day at 10:00am');
-schedule.scheduleJob('0 10 * * *', () => {
-  process();
-});
+if (process.env.DISABLE_SCHEDULER !== 'yes') {
+  // Schedule at 10am :')
+  console.log('Version Checker: runs every day at 10:00am');
+  schedule.scheduleJob('0 10 * * *', () => {
+    process();
+  });
+}
 
 // DEBUG
 // Or well, at least run this once...
