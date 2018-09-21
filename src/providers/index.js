@@ -1,11 +1,12 @@
 const fs = require('fs')
 const path = require('path')
 
+const { sourcesPath } = require('../../config')
 const { githubRepo } = require('./common/github.provider');
 
 const readSourcesFile = (sourceName) => {
   try {
-    const sourcePath = path.resolve(__dirname, '../../config/sources.json')
+    const sourcePath = path.resolve(sourcesPath)
     const file = fs.readFileSync(sourcePath, 'utf8')
 
     const sources = JSON.parse(file);
