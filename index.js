@@ -2,6 +2,7 @@ require('./secrets')();
 
 const co = require('co');
 const schedule = require('node-schedule');
+const config = require('./config');
 
 const {
   normalizeVersion,
@@ -45,11 +46,13 @@ const process = co.wrap(function*() {
 });
 
 // MAIN PROCESS
-// Schedule at 10am :')
-console.log('Version Checker: runs every day at 10:00am');
-schedule.scheduleJob('0 10 * * *', () => {
-  process();
-});
+if (!config.disableScheduler) {
+  // Schedule at 10am :')
+  console.log('Version Checker: runs every day at 10:00am');
+  schedule.scheduleJob('0 10 * * *', () => {
+    process();
+  });
+}
 
 // DEBUG
 // Or well, at least run this once...
