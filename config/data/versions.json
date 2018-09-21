@@ -1,0 +1,22 @@
+[
+  {
+    "name": "gradle",
+    "version": "v4.10.2"
+  },
+  {
+    "name": "composer",
+    "version": "v1.7.2"
+  },
+  {
+    "name": "phpunit",
+    "version": "v7.3.5"
+  },
+  {
+    "name": "cli",
+    "version": "v6.4.1"
+  },
+  {
+    "name": "yarn",
+    "version": "v1.10.0"
+  }
+]
