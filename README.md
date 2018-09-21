@@ -25,3 +25,12 @@ To add another Github project/repository to keep track of you can simply add ano
 ```
 githubRepo('version-checker', 'MaloneTuningLtd/version-checker'),
 ```
+
+## Running Once
+By default, `version-checker` stays open and runs daily at 10AM.
+
+To disable this functionality and just run once, start `version-checker` with the env var `DISABLE_SCHEDULER` set to `yes`.
+
+```
+DISABLE_SCHEDULER=yes node .
+```
