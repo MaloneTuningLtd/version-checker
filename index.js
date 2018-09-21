@@ -33,7 +33,7 @@ const parseVersions = function(source) {
 
 const process = co.wrap(function*() {
   const cached = readFromVersionFile();
-  const versions = yield providers.map(parseVersions);
+  const versions = yield providers().map(parseVersions);
 
   const saved = writeToVersionFile(versions);
   const updated = compareVersions(cached, versions);
