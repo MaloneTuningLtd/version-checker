@@ -26,7 +26,12 @@ const emitRecentVersions = recent => {
 
 const parseVersions = function(source) {
   const { name, property, provider } = source;
-  const version = provider().then(v => normalizeVersion(v[property]));
+  const version = provider()
+    .then(v => {
+      if (!v)
+        return null
+      return normalizeVersion(v[property])
+    });
 
   return { name, version };
 };
