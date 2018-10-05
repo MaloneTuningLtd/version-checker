@@ -22,5 +22,13 @@ module.exports = (propertyName = '') => (a, b) => {
   propertyA = coerceIfInvalid(propertyA);
   propertyB = coerceIfInvalid(propertyB);
 
+  if (propertyA === null) {
+    return 1;
+  }
+
+  if (propertyB === null) {
+    return -1;
+  }
+
   return semver.rcompare(propertyA, propertyB);
 };
