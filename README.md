@@ -6,6 +6,7 @@ A simplistic Node.js script which checks for new versions of software on Github.
 There's a `config.js` file in the project directory. There are two configurable values:
 
 - versionsPath
+- sourcesPath
 - slackHook
 
 An example file `.env.example` is available to see what's expected.
@@ -18,12 +19,17 @@ You can find the listener in `src/events/listeners/VersionEventListener.js`
 [slack-webhooks]:https://api.slack.com/incoming-webhooks
 
 ## Adding Github Repositories to Watch
-There's a common `github.provider.js` file which exports a method handler named `githubRepo` which handles fetching the data required from Github's API.
+Simply add the repository org and name as an entry inside the `config/sources.json` file.
+Please note, however, that the config value `sourcesPath` can be used to override where it reads its sources from.
 
-To add another Github project/repository to keep track of you can simply add another line with `githubRepo()` in the `src/providers/index.js` file placing the desired name as the first argument and the repository name as the second argument.
+Example:
+```json
+{
+  "github": [
+    "rollup/rollup"
+  ]
+}
 
-```
-githubRepo('version-checker', 'MaloneTuningLtd/version-checker'),
 ```
 
 ## Running Once

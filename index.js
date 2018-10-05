@@ -1,4 +1,4 @@
-require('./rancherSecretsBootstrap')();
+require('./secrets')();
 
 const co = require('co');
 const schedule = require('node-schedule');
@@ -26,14 +26,19 @@ const emitRecentVersions = recent => {
 
 const parseVersions = function(source) {
   const { name, property, provider } = source;
-  const version = provider().then(v => normalizeVersion(v[property]));
+  const version = provider()
+    .then(v => {
+      if (!v)
+        return null
+      return normalizeVersion(v[property])
+    });
 
   return { name, version };
 };
 
 const process = co.wrap(function*() {
   const cached = readFromVersionFile();
-  const versions = yield providers.map(parseVersions);
+  const versions = yield providers().map(parseVersions);
 
   const saved = writeToVersionFile(versions);
   const updated = compareVersions(cached, versions);

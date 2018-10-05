@@ -4,7 +4,7 @@ const path = require('path');
 const { versionsPath } = require('../../config');
 
 const normalizeVersion = v => {
-  if (v === undefined) return undefined;
+  if (!v) return undefined;
   if (v.charAt(0) === 'v') return v;
   return 'v' + v;
 };
