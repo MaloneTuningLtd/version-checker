@@ -20,7 +20,9 @@ const emitRecentVersions = recent => {
   }
 
   recent.forEach(({ name, version, oldVersion }) => {
-    versionEvent.emit('updated', name, version, oldVersion);
+    if (version !== null) {
+      versionEvent.emit('updated', name, version, oldVersion);
+    }
   });
 };
 
